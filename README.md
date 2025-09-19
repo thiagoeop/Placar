@@ -1,1 +1,255 @@
-# Placar
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placar de Gincana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .team-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .score-display {
+            font-size: 5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn-action {
+            transition: all 0.2s ease;
+        }
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+        .btn-action:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Placar de Gincana</h1>
+            <p class="text-lg text-gray-600">Acompanhe a pontuação das equipes em tempo real</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Team 1 -->
+            <div class="team-card bg-white rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-gray-800" id="team1Name">Equipe Vermelha</h2>
+                    <button onclick="editTeamName(1)" class="text-blue-500 hover:text-blue-700">
+                        <i data-feather="edit-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <div class="score-display text-center text-red-600 mb-6" id="team1Score">0</div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="updateScore(1, 1)" class="btn-action bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium">
+                        +1
+                    </button>
+                    <button onclick="updateScore(1, 5)" class="btn-action bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium">
+                        +5
+                    </button>
+                    <button onclick="updateScore(1, 10)" class="btn-action bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg font-medium">
+                        +10
+                    </button>
+                </div>
+                
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                    <button onclick="updateScore(1, -1)" class="btn-action bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-medium">
+                        -1
+                    </button>
+                    <button onclick="resetScore(1)" class="btn-action bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium">
+                        Zerar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Team 2 -->
+            <div class="team-card bg-white rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-gray-800" id="team2Name">Equipe Azul</h2>
+                    <button onclick="editTeamName(2)" class="text-blue-500 hover:text-blue-700">
+                        <i data-feather="edit-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <div class="score-display text-center text-blue-600 mb-6" id="team2Score">0</div>
+                
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="updateScore(2, 1)" class="btn-action bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium">
+                        +1
+                    </button>
+                    <button onclick="updateScore(2, 5)" class="btn-action bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium">
+                        +5
+                    </button>
+                    <button onclick="updateScore(2, 10)" class="btn-action bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg font-medium">
+                        +10
+                    </button>
+                </div>
+                
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                    <button onclick="updateScore(2, -1)" class="btn-action bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-medium">
+                        -1
+                    </button>
+                    <button onclick="resetScore(2)" class="btn-action bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium">
+                        Zerar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="mt-12 bg-white rounded-xl p-6 shadow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Histórico de Pontuações</h2>
+            <div class="overflow-y-auto max-h-64" id="historyLog">
+                <p class="text-gray-500 italic">Nenhuma alteração registrada ainda.</p>
+            </div>
+        </div>
+
+        <!-- Reset All -->
+        <div class="mt-6 text-center">
+            <button onclick="resetAll()" class="btn-action bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-lg font-medium">
+                <i data-feather="refresh-cw" class="inline mr-2"></i> Reiniciar Tudo
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize feather icons
+        feather.replace();
+        
+        // Scores storage
+        let scores = {
+            team1: 0,
+            team2: 0
+        };
+        
+        // Team names storage
+        let teamNames = {
+            team1: "Equipe Vermelha",
+            team2: "Equipe Azul"
+        };
+        
+        // History log
+        let history = [];
+        
+        // Update score function
+        function updateScore(team, points) {
+            const teamKey = `team${team}`;
+            const newScore = scores[teamKey] + points;
+            
+            // Prevent negative scores
+            if (newScore < 0) {
+                scores[teamKey] = 0;
+            } else {
+                scores[teamKey] = newScore;
+            }
+            
+            // Update display
+            document.getElementById(`${teamKey}Score`).textContent = scores[teamKey];
+            
+            // Add to history
+            const action = points >= 0 ? `+${points}` : points;
+            const timestamp = new Date().toLocaleTimeString();
+            history.unshift(`${timestamp} - ${teamNames[teamKey]}: ${action} pontos`);
+            
+            updateHistoryLog();
+            
+            // Animation
+            animateScoreUpdate(team);
+        }
+        
+        // Reset score function
+        function resetScore(team) {
+            const teamKey = `team${team}`;
+            scores[teamKey] = 0;
+            document.getElementById(`${teamKey}Score`).textContent = '0';
+            
+            // Add to history
+            const timestamp = new Date().toLocaleTimeString();
+            history.unshift(`${timestamp} - ${teamNames[teamKey]}: Pontuação zerada`);
+            
+            updateHistoryLog();
+        }
+        
+        // Reset all function
+        function resetAll() {
+            scores.team1 = 0;
+            scores.team2 = 0;
+            
+            document.getElementById('team1Score').textContent = '0';
+            document.getElementById('team2Score').textContent = '0';
+            
+            // Reset names
+            teamNames.team1 = "Equipe Vermelha";
+            teamNames.team2 = "Equipe Azul";
+            document.getElementById('team1Name').textContent = teamNames.team1;
+            document.getElementById('team2Name').textContent = teamNames.team2;
+            
+            // Clear history
+            history = [];
+            updateHistoryLog();
+            
+            // Add to history
+            const timestamp = new Date().toLocaleTimeString();
+            history.unshift(`${timestamp} - Todas as pontuações foram reiniciadas`);
+            updateHistoryLog();
+        }
+        
+        // Edit team name function
+        function editTeamName(team) {
+            const teamKey = `team${team}`;
+            const currentName = teamNames[teamKey];
+            const newName = prompt(`Digite o novo nome para ${currentName}:`, currentName);
+            
+            if (newName && newName.trim() !== '') {
+                teamNames[teamKey] = newName.trim();
+                document.getElementById(`${teamKey}Name`).textContent = teamNames[teamKey];
+                
+                // Add to history
+                const timestamp = new Date().toLocaleTimeString();
+                history.unshift(`${timestamp} - ${currentName} foi renomeada para ${newName.trim()}`);
+                updateHistoryLog();
+            }
+        }
+        
+        // Update history log
+        function updateHistoryLog() {
+            const historyElement = document.getElementById('historyLog');
+            
+            if (history.length === 0) {
+                historyElement.innerHTML = '<p class="text-gray-500 italic">Nenhuma alteração registrada ainda.</p>';
+                return;
+            }
+            
+            historyElement.innerHTML = history.map(item => 
+                `<p class="text-gray-700 py-1 border-b border-gray-100">${item}</p>`
+            ).join('');
+        }
+        
+        // Animation for score update
+        function animateScoreUpdate(team) {
+            const element = document.getElementById(`team${team}Score`);
+            element.classList.add('animate-pulse');
+            
+            setTimeout(() => {
+                element.classList.remove('animate-pulse');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
